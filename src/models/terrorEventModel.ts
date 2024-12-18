@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-export const eventSchema = new Schema({
+export const terrorAttackSchema = new Schema({
   eventid: { type: Number, unique: true },
   iyear: { type: Number },
   imonth: { type: Number },
@@ -17,8 +17,8 @@ export const eventSchema = new Schema({
   weaptype1_txt: { type: String },
   nkill: { type: Number },
   nwound: { type: Number },
-  nperps: { type: Number },
+  nperps: { type: Number }, /* number of participants in the attack */
   summary: { type: String }
 });
 
-export const EventModel = model("Event", eventSchema);
+export const TerrorEventModel = model("Event", terrorAttackSchema);
