@@ -2,3 +2,4 @@ node_modules
 .env
 dist
 globalterrorismdb_0718dist.json
+jsonData
