@@ -1,11 +1,9 @@
-import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
 import { terrorEventModel } from '../models/terrorEventModel';
 
 const filePath = path.join(__dirname, '../../src/jsonData/globalterrorismdb_0718dist.json');
 
-mongoose.connect('mongodb://localhost:27017/Terror-attacks');
 
 const importData = async () => {
   try {
