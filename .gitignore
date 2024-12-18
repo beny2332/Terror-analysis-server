@@ -1,3 +1,4 @@
 node_modules
 .env
 dist
+Terror-analysis-server\globalterrorismdb_0718dist.json
