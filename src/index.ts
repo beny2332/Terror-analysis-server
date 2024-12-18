@@ -1,19 +1,31 @@
 import express from 'express';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import relationshipsRouter from './routes/relationships.route';
 import analysisRouter from './routes/analysis.route';
-import { connectToMongo } from './config/db';
-import importData from './config/importData';
+import { connectToMongo } from './config/db/db';
+import importData from './config/db/importData';
+import createUniqueCollectionsWithRefs from './config/db/createUniqueCollectionsWithRefs';
+import mongoose from 'mongoose';
 
 const app = express();
 const port = process.env.PORT || 3030;
 
 const startServer = async () => {
   await connectToMongo();
-  await importData(); // Ensure data is imported if it doesn't already exist
+
+  // Check if master data already exists
+  const MasterModel = mongoose.models.MasterEvent || mongoose.model('MasterEvent', new mongoose.Schema({}, { strict: false }));
+  const existingCount = await MasterModel.countDocuments();
+  if (existingCount === 0) {
+    await importData(); // Import data into master collection
+    await createUniqueCollectionsWithRefs(); // Create collections for unique values with references
+  } else {
+    console.log('Master data already exists in the database');
+  }
 
   app.use(cors());
-  app.use(express.json());
+  app.use(bodyParser.json()); // Use body-parser middleware to parse JSON requests
 
   app.use('/api/relationships', relationshipsRouter);
   app.use('/api/analysis', analysisRouter);
