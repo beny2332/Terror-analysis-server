@@ -24,16 +24,10 @@ interface Group extends Document {
   events: mongoose.Types.ObjectId[];
 }
 
-interface AttackType extends Document {
-  attackType: string;
-  events: mongoose.Types.ObjectId[];
-}
-
 const MasterModel = mongoose.models.MasterEvent || mongoose.model<MasterEvent>('MasterEvent', new Schema({}, { strict: false }));
 const YearModel = mongoose.models.Year || mongoose.model<Year>('Year', new Schema({ year: Number, events: [{ type: Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
 const RegionModel = mongoose.models.Region || mongoose.model<Region>('Region', new Schema({ region: String, events: [{ type: Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
 const GroupModel = mongoose.models.Group || mongoose.model<Group>('Group', new Schema({ group: String, events: [{ type: Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
-const AttackTypeModel = mongoose.models.AttackType || mongoose.model<AttackType>('AttackType', new Schema({ attackType: String, events: [{ type: Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
 
 export const getTopGroups = async (region: string, years: number[]): Promise<{ _id: string; count: number }[]> => {
   const results: { _id: string; count: number }[] = [];
@@ -106,4 +100,25 @@ export const getDeadliestRegions = async (gname: string): Promise<{ _id: string;
     .map(([region, totalCasualties]) => ({ _id: region, totalCasualties }));
 
   return sortedRegions;
+};
+
+export const getFullDocumentsByYear = async (year: number) => {
+  const yearDoc = await YearModel.findOne({ year }).populate('events');
+  if (!yearDoc) return [];
+
+  return yearDoc.events;
+};
+
+export const getFullDocumentsByRegion = async (region: string) => {
+  const regionDoc = await RegionModel.findOne({ region }).populate('events');
+  if (!regionDoc) return [];
+
+  return regionDoc.events;
+};
+
+export const getFullDocumentsByGroup = async (group: string) => {
+  const groupDoc = await GroupModel.findOne({ group }).populate('events');
+  if (!groupDoc) return [];
+
+  return groupDoc.events;
 };

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getTopGroups, getGroupsByYear, getIncidentsByGroup, getDeadliestRegions } from '../services/relationships.service';
+import { getTopGroups, getGroupsByYear, getIncidentsByGroup, getDeadliestRegions, getFullDocumentsByYear, getFullDocumentsByRegion, getFullDocumentsByGroup } from '../services/relationships.service';
 
 export const topGroups = async (req: Request, res: Response) => {
   const { region, years } = req.query;
@@ -43,6 +43,45 @@ export const deadliestRegions = async (req: Request, res: Response) => {
     res.json(results);
   } catch (error) {
     console.error(`Error in deadliestRegions:`, error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export const fullDocumentsByYear = async (req: Request, res: Response) => {
+  const { year } = req.query;
+  console.log(`Received request for fullDocumentsByYear with year: ${year}`);
+  try {
+    const results = await getFullDocumentsByYear(parseInt(year as string));
+    console.log(`Results for fullDocumentsByYear:`, results);
+    res.json(results);
+  } catch (error) {
+    console.error(`Error in fullDocumentsByYear:`, error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export const fullDocumentsByRegion = async (req: Request, res: Response) => {
+  const { region } = req.query;
+  console.log(`Received request for fullDocumentsByRegion with region: ${region}`);
+  try {
+    const results = await getFullDocumentsByRegion(region as string);
+    console.log(`Results for fullDocumentsByRegion:`, results);
+    res.json(results);
+  } catch (error) {
+    console.error(`Error in fullDocumentsByRegion:`, error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export const fullDocumentsByGroup = async (req: Request, res: Response) => {
+  const { group } = req.query;
+  console.log(`Received request for fullDocumentsByGroup with group: ${group}`);
+  try {
+    const results = await getFullDocumentsByGroup(group as string);
+    console.log(`Results for fullDocumentsByGroup:`, results);
+    res.json(results);
+  } catch (error) {
+    console.error(`Error in fullDocumentsByGroup:`, error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
