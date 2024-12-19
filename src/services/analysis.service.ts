@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 const MasterModel = mongoose.models.MasterEvent || mongoose.model('MasterEvent', new mongoose.Schema({}, { strict: false }));
+const YearModel = mongoose.models.Year || mongoose.model('Year', new mongoose.Schema({ year: Number, events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
+const RegionModel = mongoose.models.Region || mongoose.model('Region', new mongoose.Schema({ region: String, events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
+const GroupModel = mongoose.models.Group || mongoose.model('Group', new mongoose.Schema({ group: String, events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
+const AttackTypeModel = mongoose.models.AttackType || mongoose.model('AttackType', new mongoose.Schema({ attackType: String, events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MasterEvent' }] }, { strict: false }));
 
 export const getDeadliestAttackTypes = async (attackTypes: string[]) => {
   const matchStage = attackTypes.length > 0 ? { attacktype1_txt: { $in: attackTypes } } : {};
@@ -43,4 +47,32 @@ export const getIncidentTrends = async (year?: number, month?: number, range?: s
     { $sort: { '_id.year': 1, '_id.month': 1 } }
   ]);
   return results;
+};
+
+export const getFullDocumentsByYear = async (year: number) => {
+  const yearDoc = await YearModel.findOne({ year }).populate('events');
+  if (!yearDoc) return [];
+
+  return yearDoc.events;
+};
+
+export const getFullDocumentsByRegion = async (region: string) => {
+  const regionDoc = await RegionModel.findOne({ region }).populate('events');
+  if (!regionDoc) return [];
+
+  return regionDoc.events;
+};
+
+export const getFullDocumentsByGroup = async (group: string) => {
+  const groupDoc = await GroupModel.findOne({ group }).populate('events');
+  if (!groupDoc) return [];
+
+  return groupDoc.events;
+};
+
+export const getFullDocumentsByAttackType = async (attackType: string) => {
+  const attackTypeDoc = await AttackTypeModel.findOne({ attackType }).populate('events');
+  if (!attackTypeDoc) return [];
+
+  return attackTypeDoc.events;
 };
