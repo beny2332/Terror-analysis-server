@@ -122,3 +122,26 @@ export const getFullDocumentsByGroup = async (group: string) => {
 
   return groupDoc.events;
 };
+
+export const getGroupSuggestions = async (searchTerm: string) => {
+  return await GroupModel.aggregate([
+    {
+      $search: {
+        index: "default",
+        autocomplete: {
+          query: searchTerm,
+          path: "group"
+        }
+      }
+    },
+    {
+      $project: {
+        group: 1,
+        _id: 0
+      }
+    },
+    {
+      $limit: 10
+    }
+  ]);
+};
