@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import "dotenv/config";
 import bodyParser from 'body-parser';
 import relationshipsRouter from './routes/relationships.route';
 import analysisRouter from './routes/analysis.route';
@@ -10,7 +11,7 @@ import createUniqueCollectionsWithRefs from './config/db/createUniqueCollections
 import mongoose from 'mongoose';
 
 const app = express();
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 3000;
 
 const startServer = async () => {
   await connectToMongo();
