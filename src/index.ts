@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import relationshipsRouter from './routes/relationships.route';
 import analysisRouter from './routes/analysis.route';
 import eventsRouter from './routes/events.route';
+import searchRouter from './routes/search.route';
 import { connectToMongo } from './config/db/db';
 import importData from './config/db/importData';
 import createUniqueCollectionsWithRefs from './config/db/createUniqueCollectionsWithRefs';
@@ -32,6 +33,7 @@ const startServer = async () => {
   app.use('/api/relationships', relationshipsRouter);
   app.use('/api/analysis', analysisRouter);
   app.use('/api/events', eventsRouter)
+  app.use('/api/search', searchRouter)
 
   app.listen(port, () => {
     console.log(`[server] I'm up on port ${port}`);

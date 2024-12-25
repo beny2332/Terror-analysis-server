@@ -145,3 +145,21 @@ export const getGroupSuggestions = async (searchTerm: string) => {
     }
   ]);
 };
+
+// Add this function to relationships.service.ts
+export const getEventSearchResults = async (searchTerm: string) => {
+  return await MasterModel.aggregate([
+    {
+      $search: {
+        index: "default",
+        text: {
+          query: searchTerm,
+          path: { wildcard: "*" }
+        }
+      }
+    },
+    {
+      $limit: 10
+    }
+  ]);
+};
